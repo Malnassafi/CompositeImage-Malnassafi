@@ -71,25 +71,49 @@ vector <vector <Pixel> >averageMatrix(vector<string>nameOfFiles) //trying to mak
 {                                                                //to the main Matrix then dividing by the amount of files we had in the string vector
     Bitmap image;
     vector <vector <Pixel> > mainMatrix;
-    string test;
+    vector <vector <Pixel> >test;
     Pixel rgb, RGB;
+   
     for(int index=0; index < nameOfFiles.size();index++)
     {
         image.open(nameOfFiles[index]);
-        test = nameOfFiles[index];
         test = image.toPixelMatrix();
+        if(mainMatrix.size() != test.size())
+        {
+            mainMatrix.resize(test.size());
+        }
         for(int r = 0; r<test.size();r++)
         {
+            if(mainMatrix[r].size() != test[r].size())
+            {
+                mainMatrix[r].resize(test[r].size());
+            }    
             for(int c=0; c<test[r].size();c++)
             {
                 rgb =  test[r][c];
                 RGB = mainMatrix[r][c];
-
+                RGB.red= RGB.red + rgb.red;
+                RGB.green = RGB.green + rgb.green;
+                RGB.blue = RGB.blue + rgb.blue;
+                mainMatrix[r][c] = RGB;
+                
 
             }
         }
     
     }
+    for(int r=0; r<test.size(); r++)
+    {
+        for(int c=0; c<test[r].size();c++)
+        {
+            RGB = mainMatrix[r][c];
+            RGB.red = RGB.red / nameOfFiles.size();
+            RGB.green = RGB.green / nameOfFiles.size();
+            RGB.blue= RGB.blue / nameOfFiles.size();
+            mainMatrix[r][c] = RGB;
+        }
+    }
+    
+    return mainMatrix;
 
-
-}
+}   
