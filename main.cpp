@@ -11,6 +11,7 @@ int cheakComposite(vector<string>);
 void divideMatrix(vector <vector <Pixel> > & , vector <string>);
 void addingMatrix(vector <vector <Pixel> > & , vector <vector <Pixel> >);
 void resizeMatrix(vector <vector <Pixel> > & , vector <vector <Pixel> >);
+void validPic(bool , vector <string> & , string);
 // main Function begins
 int main()
 {
@@ -20,25 +21,26 @@ int main()
         string fileName;
         char addFile;
         bool validImage;
-        int c = 0;
         do
         {
                 cout<<"What is the file name that you want to add? [it must be at least two and no more than 10]\n";
                 cin>>fileName;
                 image.open(fileName);
                 validImage = image.isImage();
-                if(validImage == true)
-                {
-                        cout<<"Image "<<c+1<<" has been loaded\n";
-                        vectorOfFiles.push_back(fileName);
-                        c++;
-                        cout<<vectorOfFiles.size()<<" \n";
-                }
-                else
-                {
-                        cout<<"The file couldnt be loaded, the file doesn't exist or isn't a valid bitmap or it isn't the same dimensions (width and height) as the first image loaded\n";
-                        cout<<"please put another file name in\n";
-                }
+
+                validPic(validImage, vectorOfFiles , fileName);
+                /*if(validImage == true)
+                  {
+                  cout<<"Image "<<c+1<<" has been loaded\n";
+                  vectorOfFiles.push_back(fileName);
+                  c++;
+                  cout<<vectorOfFiles.size()<<" \n";
+                  }
+                  else
+                  {
+                  cout<<"The file couldnt be loaded, the file doesn't exist or isn't a valid bitmap or it isn't the same dimensions (width and height) as the first image loaded\n";
+                  cout<<"please put another file name in\n";
+                  }*/
                 cout<<"Do you want to add another file Y/N\n";
                 cin>>addFile;
         }while(vectorOfFiles.size()<10 && (addFile == 'Y' || addFile == 'y'));
@@ -69,16 +71,16 @@ vector <vector <Pixel> >averageMatrix(vector<string>nameOfFiles)
                 image.open(nameOfFiles[index]);
                 test = image.toPixelMatrix();
                 /*if(mainMatrix.size() != test.size())
-                {
-                        mainMatrix.resize(test.size());
-                }
-                for(int r = 0; r<test.size();r++)
-                {
-                        if(mainMatrix[r].size() != test[r].size())
-                        {       
-                                mainMatrix[r].resize(test[r].size());
-                        }    
-                }*/
+                  {
+                  mainMatrix.resize(test.size());
+                  }
+                  for(int r = 0; r<test.size();r++)
+                  {
+                  if(mainMatrix[r].size() != test[r].size())
+                  {       
+                  mainMatrix[r].resize(test[r].size());
+                  }    
+                  }*/
                 resizeMatrix(mainMatrix, test);
                 addingMatrix(mainMatrix, test);
 
@@ -178,4 +180,18 @@ void resizeMatrix(vector <vector <Pixel> > & reSize , vector <vector <Pixel> > m
                 }
         }
 
+}
+
+void validPic(bool cheakImage , vector <string> & pushBackImage , string nameOfFile) 
+{
+        if(cheakImage == true)
+        {
+                cout<<"Image "<<pushBackImage.size() + 1<<" has been loaded\n";
+                pushBackImage.push_back(nameOfFile);
+        }
+        else
+        {
+                cout<<"The file couldnt be loaded, the file doesn't exist or isn't a valid bitmap or it isn't the same dimensions (width and height) as the first image loaded\n";
+                cout<<"please put another file name in\n";
+        }
 }
