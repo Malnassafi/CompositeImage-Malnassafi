@@ -10,6 +10,7 @@ vector <vector <Pixel> > averageMatrix(vector<string>);
 int cheakComposite(vector<string>);
 void divideMatrix(vector <vector <Pixel> > & , vector <string>);
 void addingMatrix(vector <vector <Pixel> > & , vector <vector <Pixel> >);
+void resizeMatrix(vector <vector <Pixel> > & , vector <vector <Pixel> >);
 // main Function begins
 int main()
 {
@@ -67,7 +68,7 @@ vector <vector <Pixel> >averageMatrix(vector<string>nameOfFiles)
         {
                 image.open(nameOfFiles[index]);
                 test = image.toPixelMatrix();
-                if(mainMatrix.size() != test.size())
+                /*if(mainMatrix.size() != test.size())
                 {
                         mainMatrix.resize(test.size());
                 }
@@ -77,7 +78,8 @@ vector <vector <Pixel> >averageMatrix(vector<string>nameOfFiles)
                         {       
                                 mainMatrix[r].resize(test[r].size());
                         }    
-                }
+                }*/
+                resizeMatrix(mainMatrix, test);
                 addingMatrix(mainMatrix, test);
 
                 /* for(int r = 0; r<test.size();r++)
@@ -147,7 +149,7 @@ void divideMatrix(vector <vector <Pixel> > & miniMatrix, vector <string>fileSize
 
 void addingMatrix(vector <vector <Pixel> > & moreMatrix, vector <vector <Pixel> > test1)
 {
-    Pixel rgb, RGB;
+        Pixel rgb, RGB;
         for(int r = 0; r<test1.size();r++)
         {    
                 for(int c=0; c<test1[r].size();c++)
@@ -160,4 +162,20 @@ void addingMatrix(vector <vector <Pixel> > & moreMatrix, vector <vector <Pixel> 
                         moreMatrix[r][c] = RGB;
                 }
         }
+}
+
+void resizeMatrix(vector <vector <Pixel> > & reSize , vector <vector <Pixel> > maxSize)
+{
+        if(reSize.size() != maxSize.size())
+        {
+                reSize.resize(maxSize.size());
+        }
+        for(int r = 0; r<maxSize.size();r++)
+        {
+                if(reSize[r].size() != maxSize[r].size())
+                {
+                        reSize[r].resize(maxSize[r].size());
+                }
+        }
+
 }
