@@ -4,74 +4,87 @@
 #include<string>
 
 using namespace std;
+
 // NO MAGIC NUMBERS!
-const int LEST_NUM_OF_PICS = 2;
+const int MIN_NUM_OF_PICS = 2;
 const int MAX_NUM_OF_PICS = 10;
+
 // Function Prototypes
-vector <vector <Pixel> > averageMatrix(vector<string>);
-void divideMatrix(vector <vector <Pixel> > & , int);
-void addingMatrix(vector <vector <Pixel> > & , vector <vector <Pixel> >);
+vector <vector <Pixel> > compositeImage(vector<string>);
+void divideMatrix(vector <vector <Pixel> > & , int); 
+void addingMatrix(vector <vector <Pixel> > & , vector <vector <Pixel> >); 
 void resizeMatrix(vector <vector <Pixel> > & , int , int);
+void askAndSaveImage(vector <string> &);
+void cheakImageSize(vector <string> &);
+
 // main Function begins
 int main()
 {
         Bitmap image;
         vector <vector <Pixel> > bmp;
         vector <string> vectorOfFiles;
-        string fileName;
-        char addFile;
-        bool validImage;
-        do
-        {
-                cout<<"What is the file name that you want to add? [it must be at least two and no more than 10]\n";
-                cin>>fileName;
-                image.open(fileName);
-                validImage = image.isImage();
+        
+        askAndSaveImage(vectorOfFiles);
 
-                if(validImage == true)
-                {
-                        cout<<"Image "<<vectorOfFiles.size() + 1<<" has been loaded\n";
-                        vectorOfFiles.push_back(fileName);
-
-
-                        if(vectorOfFiles.size() < MAX_NUM_OF_PICS)
-                        {
-                                cout<<"Do you want to add another file Y/N\n";
-                                cin>>addFile;
-                        }
-                        else
-                        {
-                                cout<<" You entered the max num of images allowed in this project which is "<<MAX_NUM_OF_PICS<<"!\n\n";
-                        }
-                }
-                else
-                {
-                        cerr<<"The file couldnt be loaded the file doesn't exist or isn't a valid bitmap or\n "
-                                "it isn't the same dimensions (width and height) as the first image loaded\n";
-                }
-
-        }while(vectorOfFiles.size() < MAX_NUM_OF_PICS && (addFile == 'Y' || addFile == 'y'));
-
-        if(vectorOfFiles.size() < LEST_NUM_OF_PICS)
+        if(vectorOfFiles.size() < MIN_NUM_OF_PICS)
         {
                 cerr<<"A composite image cannot be created!\n";
         }
         else
         {
-                bmp = averageMatrix(vectorOfFiles);
+                bmp = compositeImage(vectorOfFiles);
                 image.fromPixelMatrix(bmp);
                 image.save("Composite-Malnassafi.bmp");
-                cout<<"Image has been Compsite succesfully!\n\n";
+                cout<<"Image has been Composite succesfully!\n\n";
         }
         return 0;
-}
-// Function Def
-vector <vector <Pixel> >averageMatrix(vector<string>nameOfFiles)
-{                                                           
-        Bitmap image;
-        vector <vector <Pixel> > mainMatrix;
-        vector <vector <Pixel> >test;
+} //End of main Fucntion
 
+// Function Def's 
+void askAndSaveImage(vector <string> & vectorOfImages) //askes for the images that the user wants to add saves them if thier in a valid BMP format
+{
+        Bitmap image;
+        string fileName;
+        bool validImage;
+        do
+        {
+                cout<<"What is the file name that you want to add? if you dont want to add a file write done!\n";
+                cin>>fileName;
+                if( fileName != "done" && fileName != "DONE")
+                {
+                        image.open(fileName);
+                        validImage = image.isImage();
+                        if(validImage == true)
+                        {
+                                if(vectorOfImages.size() > 0)
+                                {
+                                        vectorOfImages.push_back(fileName);
+                                        cheakImageSize(vectorOfImages);
+                                }
+                                else
+                                {
+                                        cout<<"Image "<<vectorOfImages.size() + 1<<" has been loaded\n";
+                                        vectorOfImages.push_back(fileName);
+                                }
+
+                                if(vectorOfImages.size() == MAX_NUM_OF_PICS)
+                                {
+                                        cout<<" You entered the max num of images allowed in this project which is "<<MAX_NUM_OF_PICS<<"!\n\n";
+                                }
+                        }
+                        else
+                        {
+                                cerr<<"The file couldnt be loaded the file doesn't exist or isn't a valid bitmap \n ";
+                        }
+                }
+        }while(vectorOfImages.size() < MAX_NUM_OF_PICS && (fileName != "DONE" && fileName != "done"));
+}
+
+vector <vector <Pixel> > compositeImage(vector<string>nameOfFiles) //open's each image that is stored in the vector then calls a function to resize the main matrix 
+{                                                                 //then calls another function that addes thier RGB's to the main matrix   
+        Bitmap image;                                             //then calls another function to divide the main matrix RGB by the number of images in side the vector
+        vector <vector <Pixel> > mainMatrix;                      //then return the main matrix  
+        vector <vector <Pixel> >test;
         for(int index=0; index < nameOfFiles.size();index++)
         {
                 image.open(nameOfFiles[index]);
@@ -84,7 +97,7 @@ vector <vector <Pixel> >averageMatrix(vector<string>nameOfFiles)
         return mainMatrix;
 }   
 
-void divideMatrix(vector <vector <Pixel> > & miniMatrix, int size)
+void divideMatrix(vector <vector <Pixel> > & miniMatrix, int size) // divids the main matrix by the number of images saved in the vector of strings
 {
         Pixel RGB;
         for(int r=0; r<miniMatrix.size(); r++)
@@ -101,24 +114,24 @@ void divideMatrix(vector <vector <Pixel> > & miniMatrix, int size)
 
 }
 
-void addingMatrix(vector <vector <Pixel> > & moreMatrix, vector <vector <Pixel> > test1)
+void addingMatrix(vector <vector <Pixel> > & mainSum, vector <vector <Pixel> > addTo) // addes all the RGB Pixels to the main matrix
 {
         Pixel rgb, RGB;
-        for(int r = 0; r<test1.size();r++)
+        for(int r = 0; r<addTo.size();r++)
         {    
-                for(int c=0; c<test1[r].size();c++)
+                for(int c=0; c<addTo[r].size();c++)
                 {
-                        rgb =  test1[r][c];
-                        RGB = moreMatrix[r][c];
+                        rgb =  addTo[r][c];
+                        RGB = mainSum[r][c];
                         RGB.red= RGB.red + rgb.red;
                         RGB.green = RGB.green + rgb.green;
                         RGB.blue = RGB.blue + rgb.blue;
-                        moreMatrix[r][c] = RGB;
+                        mainSum[r][c] = RGB;
                 }
         }
 }
 
-void resizeMatrix(vector <vector <Pixel> > & reSize , int rows, int cols)
+void resizeMatrix(vector <vector <Pixel> > & reSize , int rows, int cols) // resizes the main matrix to the size of all the images
 {
         if(reSize.size() != rows)
         {
@@ -132,4 +145,28 @@ void resizeMatrix(vector <vector <Pixel> > & reSize , int rows, int cols)
                 }
         }
 
+}
+
+void cheakImageSize(vector <string> & sizeOfImage) // cheaks if the size of the image is the same as the first image 
+{
+        Bitmap image, image1;
+        vector <vector <Pixel> >mainImage;
+        vector <vector <Pixel> >cheakSize;
+        
+        image.open(sizeOfImage[0]);
+        mainImage = image.toPixelMatrix();
+        image1.open(sizeOfImage[sizeOfImage.size() - 1]);
+        cheakSize = image1.toPixelMatrix();
+        if(mainImage.size() != cheakSize.size() || mainImage[0].size() != cheakSize[0].size())
+        {
+                sizeOfImage.pop_back();
+                image.fromPixelMatrix(mainImage);
+                cerr<<"This imgae isn't the same dimensions (width and height) as the first image loaded\n";
+        }
+        else
+        {
+                image.fromPixelMatrix(mainImage);
+                image1.fromPixelMatrix(cheakSize);
+                cout<<"Image "<<sizeOfImage.size()<<" has been loaded\n";
+        }
 }
