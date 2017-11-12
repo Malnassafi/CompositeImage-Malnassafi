@@ -8,7 +8,7 @@ using namespace std;
 // NO MAGIC NUMBERS!
 const int MIN_NUM_OF_PICS = 2;
 const int MAX_NUM_OF_PICS = 10;
-
+const int NO_PICS = 0;
 // Function Prototypes
 vector <vector <Pixel> > compositeImage(vector<string>);
 void divideMatrix(vector <vector <Pixel> > & , int); 
@@ -56,7 +56,7 @@ void askAndSaveImage(vector <string> & vectorOfImages) //askes for the images th
                         validImage = image.isImage();
                         if(validImage == true)
                         {
-                                if(vectorOfImages.size() > 0)
+                                if(vectorOfImages.size() > NO_PICS)
                                 {
                                         vectorOfImages.push_back(fileName);
                                         cheakImageSize(vectorOfImages);
@@ -80,17 +80,17 @@ void askAndSaveImage(vector <string> & vectorOfImages) //askes for the images th
         }while(vectorOfImages.size() < MAX_NUM_OF_PICS && (fileName != "DONE" && fileName != "done"));
 }
 
-vector <vector <Pixel> > compositeImage(vector<string>nameOfFiles) //open's each image that is stored in the vector then calls a function to resize the main matrix 
-{                                                                 //then calls another function that addes thier RGB's to the main matrix   
-        Bitmap image;                                             //then calls another function to divide the main matrix RGB by the number of images in side the vector
-        vector <vector <Pixel> > mainMatrix;                      //then return the main matrix  
-        vector <vector <Pixel> >test;
+vector <vector <Pixel> > compositeImage(vector<string>nameOfFiles) // Compsites all the images together
+{                                                                 
+        Bitmap image;                                          
+        vector <vector <Pixel> > mainMatrix;                       
+        vector <vector <Pixel> >subMatrix;
         for(int index=0; index < nameOfFiles.size();index++)
         {
                 image.open(nameOfFiles[index]);
-                test = image.toPixelMatrix();
-                resizeMatrix(mainMatrix, test.size() , test[0].size());
-                addingMatrix(mainMatrix, test);
+                subMatrix = image.toPixelMatrix();
+                resizeMatrix(mainMatrix, subMatrix.size() , subMatrix[0].size());
+                addingMatrix(mainMatrix, subMatrix);
                 cout<<"\nImage "<<index + 1<<" out of "<<nameOfFiles.size()<<" is done\n\n";
         }
         divideMatrix(mainMatrix,nameOfFiles.size());
