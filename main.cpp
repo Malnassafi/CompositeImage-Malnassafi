@@ -9,6 +9,7 @@ using namespace std;
 const int MIN_NUM_OF_PICS = 2;
 const int MAX_NUM_OF_PICS = 10;
 const int NO_PICS = 0;
+
 // Function Prototypes
 vector <vector <Pixel> > compositeImage(vector<string>);
 void divideMatrix(vector <vector <Pixel> > & , int); 
